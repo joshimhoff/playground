@@ -1,32 +1,24 @@
 # REAL LAMBDAS in Python -- clearly a hack and a half
 # can use to make ANONYMOUS FUNCTIONS -- with filter() for example
 
-# TODO: currently, ultimateLambda can't return values, so pretty useless
-
-def ultimateLambda(code, unnamedArgs=[]):    
-    # a closure!
-    def function(*args, **kwargs):
-        # args
-        for i, arg in enumerate(unnamedArgs):
-            locals()[arg] = args[i]
-        # kwargs
-        for k, v in kwargs.iteritems():
-            locals()[k] = v
-        exec code in locals(), globals()
+def ultimateLambda(arguments, code):    
+    code = "def function(" + arguments + "):" + code
+    exec code in locals(), globals()
     return function
 
 if __name__ == "__main__":
-    # basic usage -- real lambdas with more than statements
-    f = ultimateLambda("for i in range(10):\n print i")
-    f()
+    # basic usage -- real lambdas
+    f = ultimateLambda("x, y", "return x+y")
+    print f(2, 3)
 
-    # lambda with arguments
-    f = ultimateLambda("print arg1\nprint arg2", ["arg1", "arg2"])
-    f("cat", 4)
+    # more than just statements -- this is actually pretty cool
+    f = ultimateLambda("array", "\n\tsum = 0\n\tfor elem in array:\n\t\tsum += elem\n\treturn sum")
+    print f([1,2,3])
 
-    # lambda with named arguments
-    f = ultimateLambda("print arg1\nprint arg2")
-    f(arg1 = "dog", arg2 = 3)
+    # anonymous function -- function never saved in memory!
+    print ultimateLambda("x, y", "return x*y")(3, 3)
 
-    # anonymous function! -- function never saved in memory
-    ultimateLambda("print bird", ["bird"])(5.0)
+    # real world usage -- with filter()
+    array = [1,2,3,4,5]
+    new = filter(ultimateLambda("s", "\n\tif s<4: return True\n\telse: return False"), array)
+    print new

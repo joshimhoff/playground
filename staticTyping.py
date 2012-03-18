@@ -1,8 +1,6 @@
 # a decorator that adds static-typing to python function arguments
 # so evil...
 
-# TODO: work with methods
-
 def static_typing(*args, **kwargs):
     def my_decorator(func):
         # saved for later
